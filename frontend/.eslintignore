@@ -1,0 +1,5 @@
+vue.config.js
+package.json
+package-lock.json
+**/__tests__/**
+**/__test_util__/**

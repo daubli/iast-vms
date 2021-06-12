@@ -1,0 +1,29 @@
+spring:
+  servlet:
+    multipart:
+      enabled: false
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:4433/vms
+    username: vms
+    password: vms
+  jpa:
+    hibernate:
+      temp:
+        use_jdbc_metadata_defaults: false
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+  web:
+    resources:
+      static-locations: classpath:/static/,file:../../frontend/dist/
+      cache:
+        cachecontrol:
+          cache-public: true
+          no-cache: true
+
+server:
+  port: 7081
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json,application/xml
+    min-response-size: 1024

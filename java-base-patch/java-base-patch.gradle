@@ -1,0 +1,20 @@
+plugins {
+    id 'java'
+}
+
+group 'de.vms'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    archiveFileName = 'base-patch.jar'
+}
+
+compileJava {
+    
+}

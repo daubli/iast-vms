@@ -1,0 +1,87 @@
+buildscript {
+    ext {
+        springBootVersion = '2.4.+'
+        immutablesVersion = '2.8.+'
+    }
+}
+
+def testAbleProjects = ["vms-agent", "vms-domain", "vms-public", "main"]
+
+repositories {
+    mavenCentral()
+}
+
+apply plugin: "jacoco"
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: "jacoco"
+
+    sourceCompatibility = 11
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
+        implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+        implementation "org.springframework.boot:spring-boot-starter-validation:$springBootVersion"
+        implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
+
+        compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+
+        implementation "org.springframework.boot:spring-boot-starter-webflux:$springBootVersion"
+
+        implementation 'com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20200615.1'
+        implementation 'org.apache.commons:commons-lang3:3.+'
+
+        runtimeOnly 'org.postgresql:postgresql:42.2.+'
+        testRuntimeOnly 'com.h2database:h2:1.4.+'
+
+        testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+        testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+
+        implementation "org.modelmapper:modelmapper:2.3.8"
+        implementation "org.zeroturnaround:zt-zip:1.14"
+
+        implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+
+        // this works similar to <dependencyManagement> in Maven
+        constraints {
+            implementation 'com.google.code.gson:gson:2.8.+'
+            implementation 'com.zaxxer:HikariCP:3.4.+'
+            implementation 'commons-io:commons-io:2.7'
+        }
+    }
+
+    test {
+        useJUnitPlatform {
+            includeEngines 'junit-jupiter'
+        }
+        testLogging {
+            events "skipped", "failed", "STANDARD_ERROR"
+            showStandardStreams = false // Ignore 'info' output to keep gradle log short
+            exceptionFormat = "full"
+            showExceptions = true
+            showStackTraces = true
+            showCauses = true
+        }
+        maxParallelForks = 1
+    }
+    idea {
+        module {
+            sourceDirs += file('out/production/classes/generated')
+            generatedSourceDirs += file('out/production/classes')
+            downloadJavadoc = false
+            downloadSources = true
+        }
+    }
+}
+
+task testSubProjects() {
+    def relevantSubprojects = subprojects.findAll { testAbleProjects.contains it.name }
+
+    dependsOn(relevantSubprojects.test)
+}

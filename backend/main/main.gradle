@@ -1,0 +1,61 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.owasp:dependency-check-gradle:6.0.+'
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version '2.3.0.RELEASE'
+}
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'org.owasp.dependencycheck'
+
+dependencyCheck {
+    suppressionFile = file('dep-vulnerabilities-suppressions.xml')
+    scanConfigurations = ['runtimeClasspath']
+    failBuildOnCVSS 0
+}
+
+task bootRunProduction {
+    dependsOn bootRun
+}
+
+bootRun {
+    if (gradle.startParameter.taskNames.contains("bootRunProduction")) {
+        dependsOn(':frontend:build')
+    } else {
+        dependsOn(':frontend:clean') // this ensures that there is no old dist folder when running in dev mode
+        systemProperty "iast-vms.development.enabled", "true" // by default, 'bootRun' starts in development mode
+        systemProperty "server.port", "7081"
+    }
+
+    systemProperty "plain_logging", System.getProperty("plain_logging")
+}
+
+bootJar {
+    archivesBaseName = 'vms'
+    archiveVersion = '0.0.1-SNAPSHOT'
+    mainClassName = 'de.vms.VmsApplication'
+
+    dependsOn(':frontend:build')
+
+    into('static') {
+        from project(':frontend').file('dist')
+    }
+}
+
+processResources {
+    from(project(":java-agent").shadowJar)
+    from(project(":java-base-patch").jar)
+}
+
+dependencies {
+    // DB module parts to load them into spring to be found by interface annotation
+    implementation project(':backend:vms-agent')
+    implementation project(':backend:vms-public')
+    implementation project(':backend:vms-domain')
+}

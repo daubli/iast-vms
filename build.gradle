@@ -1,0 +1,17 @@
+plugins {
+    id 'org.sonarqube' version '2.7'
+}
+
+allprojects {
+    buildscript {
+        ext {
+            junitJupiterVersion = '5.6.+'
+            mockitoVersion = '3.5.+'
+        }
+    }
+
+    apply plugin: 'idea'
+
+    group = 'com.iast-vms'
+    version = '0.0.1-SNAPSHOT'
+}

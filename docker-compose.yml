@@ -1,0 +1,30 @@
+version: '3.6'
+services:
+  db:
+    image: postgres
+    container_name: db
+    environment:
+      POSTGRES_PASSWORD: vms
+      POSTGRES_USER: vms
+      POSTGRES_DB: vms
+    ports:
+      - 4433:5432
+    networks:
+      - default
+  app:
+    build: .
+    container_name: vms
+    environment:
+      SPRING_DATASOURCE_USERNAME: vms
+      SPRING_DATASOURCE_PASSWORD: vms
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/vms
+    ports:
+      - 80:7081
+    depends_on:
+      - db
+    networks:
+      - default
+
+networks: 
+  default:
+    driver: bridge

@@ -1,0 +1,73 @@
+// Consider just writing your styles in a <style lang="scss"></style> block in your Vue component.
+// Only base styles should go here.
+
+@import "../../../scss/variables.scss";
+
+@import "_component-dependencies";
+
+@import "animations/_animations";
+@import "settings/_fonts";
+
+@import "_custom-properties";
+
+body {
+	word-wrap: break-word; /* Just for IE11, as it doesn't recognize overflow-wrap */
+	overflow-wrap: break-word;
+	word-break: normal; /* This is only active in IE11 and Edge, as they don't understand the correct rule (see below) */
+	word-break: break-word; /* This is the intended behaviour, but this is unrecognized in IE11 and Edge */
+}
+
+table {
+	word-wrap: normal; /* Just for IE11, as it doesn't recognize overflow-wrap */
+	overflow-wrap: normal;
+	word-break: normal;
+}
+
+/* Smaller font sizes for smaller viewports with less space */
+@media (max-width: map-get($grid-breakpoints, 'lg')) {
+	.v-application .text-h3 {
+		font-size: 2.5rem !important;
+		line-height: 3.3rem !important;
+	}
+
+	.v-application .text-h5 {
+		font-size: 1.2rem !important;
+	}
+}
+
+// this fixes a bug in vuetify that calculated the box-shadow of cards with the attribute flat wrong in firefox
+.v-card--flat {
+	box-shadow: none !important;
+}
+
+// fixes a bug that checkboxes were not clickable in IE 11
+.v-input--selection-controls__input input[role=checkbox],
+.v-input--selection-controls__input input[role=radio],
+.v-input--selection-controls__input input[role=switch] {
+	left: 0;
+}
+
+// Select boxes in Vuetify use a line height with a fixed pixel value which - combined with our adjustments to the font
+// - leads to letters being cut off at the bottom. We therefore set the line-height to the default one for text in
+// Vuetify.
+.v-select__slot .v-select__selections {
+	line-height: 1.5;
+}
+
+// Line-height is set way too small by Vuetify here (same as font-size) so it doesn't work well for multi-line hints in
+// inputs. Reset it to the inherited value instead of the one specified for .v-messages__message by Vuetify.
+.v-input .v-messages__message {
+	line-height: inherit;
+}
+
+/* Vuetify specifies overflow-wrap on v-card, but IE11 only understands word-wrap */
+.v-card {
+	word-wrap: break-word;
+}
+
+/* Fix icon in flex container shrinking below its defined width to 0 in IE11 if the flex item next it wants the rest of
+the space. */
+.d-flex > .v-icon--svg {
+	min-width: 24px;
+	min-height: 24px;
+}

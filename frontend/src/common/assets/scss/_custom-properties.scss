@@ -1,0 +1,15 @@
+
+
+// This defines CSS custom properties ("CSS variables"), scoped to the root element of the DOM (so it will get inherited
+// to all elements below). These properties contain values that are meant to be changeable at runtime (unlike SCSS
+// variables which are fixed at compile time). This is only used for customer colors that the customer can change at
+// runtime on the settings page. This is done in branding.ts
+// Note that this file contains actual CSS declarations that end up in the compiled CSS, so don't include it in a file
+// that is included in the CSS of all Vue components.
+:root {
+	//--key-color: #3496EE;
+	@include defineColorHSL(--key-color, 208, 85%, 57%);
+
+	--primary-header-background-color: #3496EE;
+	--primary-header-foreground-color: $white;
+}

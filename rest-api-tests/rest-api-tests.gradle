@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 11
+
+dependencies {
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+
+    testImplementation 'io.rest-assured:rest-assured:4.3.+'
+
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.9.9'
+    testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.9'
+    testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.9'
+    testImplementation group: 'org.hamcrest', name: 'java-hamcrest', version: '2.0.0.0'
+}
+
+task integrationTest(type: Test) {
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    outputs.upToDateWhen { false }
+    testLogging {
+        events "skipped", "failed", "STANDARD_ERROR"
+        showStandardStreams = false // Ignore 'info' output to keep gradle log short
+        exceptionFormat = "full"
+        showExceptions = true
+        showStackTraces = true
+        showCauses = true
+    }
+}

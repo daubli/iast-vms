@@ -1,0 +1,62 @@
+apply plugin: 'java'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
+    }
+}
+
+group 'de.vms'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.9
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.microstream.one/repository/maven-releases/' }
+}
+
+dependencies {
+    implementation("net.bytebuddy:byte-buddy-agent:1.10.4")
+    implementation("net.bytebuddy:byte-buddy:1.10.4")
+    implementation('com.google.code.gson:gson:2.8.6')
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.0-alpha1'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.0-alpha1'
+    implementation group: 'junit', name: 'junit', version: '4.12'
+    implementation group: 'org.powermock', name: 'powermock-module-junit4', version: '2.0.7'
+    implementation group: 'org.powermock', name: 'powermock-api-mockito2', version: '2.0.7'
+    testCompile group: 'com.squareup.okhttp3', name: 'mockwebserver', version: '5.0.0-alpha.2'
+}
+
+jar {
+    manifest {
+        attributes 'Premain-Class': "de.vms.javaagent.IASTAgent"
+        attributes 'Can-Redefine-Classes': 'true'
+        attributes 'Can-Retransform-Classes': 'true'
+    }
+}
+
+shadowJar {
+    archiveFileName = 'java-agent.jar'
+    mergeServiceFiles()
+}
+
+import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+
+task relocateShadowJar(type: ConfigureShadowRelocation) {
+    target = tasks.shadowJar
+    prefix = "shadow"
+}
+
+tasks.shadowJar.dependsOn tasks.relocateShadowJar
+
+test.jvmArgs new StringBuilder()
+        .append("--patch-module java.base=")
+        .append(project(':java-base-patch').getBuildDir().getAbsolutePath())
+        .append("/libs/base-patch.jar").toString().split(" ")

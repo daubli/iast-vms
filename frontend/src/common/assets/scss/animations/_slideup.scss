@@ -1,0 +1,15 @@
+.slideup {
+	&--active {
+		opacity: 0.6;
+	}
+
+	&--leave-active {
+		opacity: 0.6;
+		transform: translate3d(0, 0, 0);
+	}
+
+	&--leave-to,
+	&--enter {
+		transform: translate3d(0, 100%, 0);
+	}
+}

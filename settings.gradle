@@ -1,0 +1,20 @@
+rootProject.name = 'iast-vms'
+
+include 'frontend'
+include 'backend'
+include 'backend:vms-agent'
+include 'backend:vms-public'
+include 'backend:vms-domain'
+include 'backend:main' // for generating the deployment artifact
+include 'java-agent'
+include 'java-base-patch'
+include 'rest-api-tests'
+
+rootProject.children.each { it ->
+    it.buildFileName = it.name + '.gradle'
+    it.children.each { it2 ->
+        it2.buildFileName = it2.name + '.gradle'
+    }
+}
+
+

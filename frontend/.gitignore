@@ -1,0 +1,10 @@
+dist
+node_modules
+coverage
+
+# local env files
+.env.local
+.env.*.local
+
+# log files
+npm-debug.log*

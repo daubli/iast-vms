@@ -1,0 +1,34 @@
+{
+	"compilerOptions": {
+		"outDir": "./built/",
+		"sourceMap": true,
+		"strict": true,
+		"noImplicitReturns": true,
+		"experimentalDecorators": true,
+		"lib": [
+			"dom",
+			"es2015",
+			"es2018.promise"
+		],
+		"typeRoots": [
+			"./node_modules/@types",
+			"./node_modules/vuetify/types",
+			"./typings"
+		],
+		"module": "esNext",
+		"moduleResolution": "Node",
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
+		"importHelpers": true,
+		"target": "ES5",
+		"baseUrl": ".",
+		"paths": {
+			"@/*": [
+				"src/*"
+			]
+		}
+	},
+	"include": [
+		"./src/**/*"
+	]
+}

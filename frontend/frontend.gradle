@@ -1,0 +1,71 @@
+plugins {
+    id 'base'
+    // Gradle plugin for executing node scripts (supports NPM, Yarn, Grunt and Gulp)
+    id 'com.github.node-gradle.node' version '2.1.1'
+}
+
+repositories {
+    mavenCentral()
+}
+
+node {
+    // node version
+    version = '10.14.1'
+    download = true
+
+    // npm version
+    npmVersion = '6.12.0'
+}
+
+task npmInstallNoSave(type: NpmTask) {
+    inputs.file('package.json')
+    outputs.upToDateWhen { file('node_modules').exists() }
+    args = ['install', '--no-save']
+}
+
+def getRelevantFrontendSources() {
+    fileTree(
+            dir: '.',
+            includes: ['src/**', 'public/**', '*.js', '*.json', 'frontend.gradle', '.browserslistrc'],
+            exclude: 'package-lock.json'
+    )
+}
+
+task npmBuild(type: NpmTask) {
+    inputs.files relevantFrontendSources
+    outputs.upToDateWhen { file('dist/index.html').exists() }
+    dependsOn "npmInstallNoSave" // FIXME we probably want to call 'npm ci' as part of the Gitlab CI build
+    args = ['run', 'build']
+}
+
+//task npmTest(type: NpmTask) {
+//    inputs.files relevantFrontendSources
+//    outputs.upToDateWhen { true } // this should make the inputs the only deciding factor if this task is up-to-date
+//    dependsOn "npmInstallNoSave"
+//    args = ['run', 'test:unit', '--', '--passWithNoTests']
+//}
+
+//task npmTestWithCoverage(type: NpmTask) {
+//    outputs.upToDateWhen { false } // if someone runs this task, it will always be executed
+//    dependsOn "npmInstallNoSave"
+//    args = ['run', 'testWithCoverage', '--', '--passWithNoTests']
+//}
+
+task npmAudit(type: NpmTask) {
+    outputs.upToDateWhen { false } // if someone runs this task, it will always be executed
+    args = ['audit', '--audit-level=high']
+}
+
+//tasks.check.dependsOn(tasks.npmAudit)
+
+clean {
+    doFirst {
+        delete 'dist'
+    }
+}
+
+assemble {
+//    dependsOn npmTest
+    dependsOn npmBuild
+//    npmBuild.shouldRunAfter npmTest
+}

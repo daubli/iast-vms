@@ -1,0 +1,22 @@
+// basic color variable naming convention:
+// we are using the hsl(h,s,l) color model, where h = hue, s = saturation, l = lightness
+// if there is only one color with a certain hue, an arbitrary name can be used
+// if there is more than one color of a specific hue we add the numeric value of the lightness of that color at the end
+// additionally the colors are sorted by their hue values
+
+$white: hsl(0, 0%, 100%);
+$black: rgba(0, 0, 0, 1);
+
+$gray976: hsl(210, 16.7%, 97.6%); // #f8f9fa
+$gray953: hsl(210, 16.7%, 95.3%); // #f1f3f5
+
+$gray930: hsl(210,16%,93%); // #e9ecef
+$gray886: hsl(210, 13.8%, 88.6%); // #dee2e6
+
+$gray710: hsl(210, 10.8%, 71%); // #adb5bd
+$gray557: hsl(210, 7.1%, 55.7%); // #868e96
+$gray440: hsl(210,7%,44%); // #697179
+
+$gray314: hsl(210, 8.8%, 31.4%); // #495057
+$gray227: hsl(210, 10.3%, 22.7%); // #343a40, rgb(52,58,64)
+$gray145: hsl(210,10.8%,14.5%); // #212529, rgb(33,37,41)
